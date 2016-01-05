@@ -8,10 +8,10 @@ class CorpusSpec extends FunSpec with Matchers {
     getClass().getClassLoader().getResource("inaugural/").getPath()
 
   describe("Corpus") {
-    describe("readerFromDir") {
-      it("should produce a CollectionReaderDescription from a directory path") {
-        val reader = Corpus.readerFromDir(corpusDir)
-        val params = reader.getCollectionReaderMetaData().getConfigurationParameterSettings()
+    describe("fromDir") {
+      it("should produce a Corpus with a CollectionReaderDescription from a directory path") {
+        val corpus = Corpus.fromDir(corpusDir)
+        val params = corpus.reader.getCollectionReaderMetaData().getConfigurationParameterSettings()
         val patterns = params.getParameterValue("patterns")
         // retrieve all .txt documents
         patterns shouldBe Array("[+]**/*.txt")
@@ -21,10 +21,9 @@ class CorpusSpec extends FunSpec with Matchers {
     describe("tokenize") {
       describe("when passed a reader") {
         it("should tokenize a corpus") {
-          val reader = Corpus.readerFromDir(corpusDir)
-          val jcasIterator = Corpus.tokenize(reader)
+          val corpus = Corpus.fromDir(corpusDir)
           val tokenMap = (for {
-            jcas <- jcasIterator
+            jcas <- corpus.tokenize()
             metadata = JCasUtil.selectSingle(jcas, classOf[DocumentMetaData])
             title = metadata.getDocumentTitle()
             tokens = JCasUtil.select(jcas, classOf[Token])
@@ -38,10 +37,9 @@ class CorpusSpec extends FunSpec with Matchers {
     describe("lemmatize") {
       describe("when passed a reader") {
         it("should lemmatize a corpus") {
-          val reader = Corpus.readerFromDir(corpusDir)
-          val jcasIterator = Corpus.lemmatize(reader)
+          val corpus = Corpus.fromDir(corpusDir)
           val lemmaMap = (for {
-            jcas <- jcasIterator
+            jcas <- corpus.lemmatize()
             metadata = JCasUtil.selectSingle(jcas, classOf[DocumentMetaData])
             title = metadata.getDocumentTitle()
             lemmas = JCasUtil.select(jcas, classOf[Lemma])
