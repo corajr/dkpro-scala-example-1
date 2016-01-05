@@ -27,10 +27,10 @@ case class Corpus(reader: CollectionReaderDescription) {
 }
 
 object Corpus {
-  def fromDir(directory: String, lang: String = "en"): Corpus =
+  def fromDir(directory: String, pattern: String = "[+]**/*.txt", lang: String = "en"): Corpus =
     Corpus(createReaderDescription(
       classOf[TextReader],
       ResourceCollectionReaderBase.PARAM_SOURCE_LOCATION, directory,
-      ResourceCollectionReaderBase.PARAM_PATTERNS, "[+]**/*.txt",
+      ResourceCollectionReaderBase.PARAM_PATTERNS, pattern,
       ResourceCollectionReaderBase.PARAM_LANGUAGE, lang))
 }
